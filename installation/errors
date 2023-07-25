@@ -1,0 +1,30 @@
+
+install.packages(path_to_source, repos = NULL, type="source")
+doesn't work
+nor does R CMD INSTALL
+No DLL are created
+
+install.packages('https://github.com/USCbiostats/geese', repos = NULL, type="source")
+Error in getOctD(x, offset, len) : invalid octal digit
+Warning message:
+In install.packages("https://github.com/USCbiostats/geese", repos = NULL,  :
+  installation of package 'C:/Users/IRRELE~1/AppData/Local/Temp/RtmpeMzqsS/downloaded_packages/geese' had non-zero exit status
+
+
+install.packages('geese/', repos=NULL, type='source')
+* installing *source* package 'geese' ...
+** using staged installation
+** libs
+no DLL was created
+ERROR: compilation failed for package 'geese'
+* removing 'C:/Users/Irrelevant/AppData/Local/R/win-library/4.2/geese'
+Warning message:
+In install.packages("geese", repos = NULL, type = "source") :
+  installation of package 'geese' had non-zero exit status
+
+devtools::install('./geese/')
+no DLL was created
+ERROR: compilation failed for package 'geese'
+* removing 'C:/Users/Irrelevant/AppData/Local/R/win-library/4.2/geese'
+Error in `(function (command = NULL, args = character(), error_on_status = TRUE, …`:
+! System command 'Rcmd.exe' failed
