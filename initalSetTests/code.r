@@ -1,17 +1,17 @@
 
 #this is used for looking at a single panther tree with multiple functions
+library(geese)
+x = readRDS('../treeSelection/TestTreePTHR11848.rds')
 
-treeLoc = 'AphyloTreePTHR42908-4Func.rds'
-z1 = readRDS(treLoc)
 set.seed(31)
+#z1 = x[2:5]
+z1 = x
 
-#add the annotations into a dataframe
-#requires internal node annotations which are all set as 9 here
 annotations = data.frame()
-for(i in c(2,3)){
+for(i in c(1,2)){
 	annotations = rbind(annotations,c(rep(9,length(z1[[1]]$node.type)),z1[[1]]$tip.annotation))
 }
-annos = asplit(t(annotations),1) #transpose to correct orientation
+annos = asplit(t(annotations),1)
 
 edges = z1[[1]]$tree$edge
 rootpos = 1 + length(z1[[1]]$tip.annotation)
@@ -33,11 +33,32 @@ term_gains(bmodel,0:1,duplication = 1)
 term_loss(bmodel,0:1,duplication = 0)
 term_loss(bmodel,0:1,duplication = 1)
 term_maxfuns(bmodel, 0, 1,duplication = 2) #TODO but try seperate with 1 and 2 later
+term_overall_changes(bmodel, TRUE)
+
+
+ 
+rule_limit_changes(bmodel, 0, 0, 3)
+rule_limit_changes(bmodel, 1, 0, 3)
+rule_limit_changes(bmodel, 2, 0, 3)
+rule_limit_changes(bmodel, 3, 0, 3)
+rule_limit_changes(bmodel, 4, 0, 3)
+rule_limit_changes(bmodel, 5, 0, 3)
+rule_limit_changes(bmodel, 6, 0, 3)
+rule_limit_changes(bmodel, 7, 0, 3)
+
 
 #rule_limit_changes(bmodel, 0, 0, 2, TRUE)
 #rule_limit_changes(bmodel, 1, 0, 2, FALSE)
 
+# We need to initialize to do all the accounting
 init_model(bmodel)
+#> Initializing nodes in Geese (this could take a while)...
+#> ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| done.
+
+print(bmodel)
+geese_mle(bmodel, hessian = TRUE)
+ 
+
 
 print(bmodel)
 geese_mle(bmodel, hessian = TRUE)
