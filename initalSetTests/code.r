@@ -60,8 +60,4 @@ geese_mle(bmodel, hessian = TRUE)
  
 
 
-print(bmodel)
-geese_mle(bmodel, hessian = TRUE)
- 
-
 
