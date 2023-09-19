@@ -1,7 +1,7 @@
 
 #run this code from it's own folder
 
-tfleaves = TRUE # to remove excess leaves
+tfleaves = FALSE # to remove excess leaves
 tfpoly = TRUE # to shrink polytomies
 maxPoly = 7 # max polytomy size
 maxLeaf = 2 # maximium leaf nodes for each parent (may exceed value based on number of annotated leaves across different functions)
@@ -48,8 +48,15 @@ rootpos = 1 + length(z1[[functionNum[1]]]$tip.annotation)
 dups = c(rep(FALSE,rootpos -1),z1[[functionNum[1]]]$node.type == 0)
 #annotations <- replicate(length(annotations), c(9, 9), simplify = FALSE)
 
-if(tfleaves == TRUE) z1 = removeLeaves(z1[functionNum],2)
-
+z1 = z1[functionNum]
+if(tfleaves) {
+    z2 = removeLeaves(z1,2)
+    z1 = z2$tree
+    edges = z1[[1]]$tree$edge
+    annos = z2$annos
+    rootpos = min(edges[,1])
+    dups = c(rep(FALSE,rootpos -1),z1[[1]]$node.type == 0)
+}
 
 
 if(tfpoly && max(table(edges[,1])) > maxPoly) {

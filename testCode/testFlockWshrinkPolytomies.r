@@ -25,7 +25,7 @@ treeNums[[4]] = 1:4
 
 
 
-for(flocknum in 1:length(treelocs)){
+for(flocknum in 1:(length(treelocs)-1)){
 #x = readRDS('AphyloTreePTHR42908-4Func.rds')
 z1 = readRDS(treelocs[flocknum])
 ruleLim = FALSE # set true to use rule limit changes
@@ -85,6 +85,11 @@ if(tfpoly && max(table(edges[,1])) > maxPoly) {
 #plottingGeese2(8,z2,1)
 
 rootpos = min(z1[[1]]$tree$edge[,1])
+
+
+print(length(annos) == max(edges[,1]))
+print(length(annos) == length(dups))
+print(length(annos))
 
 add_geese(
   flock,
