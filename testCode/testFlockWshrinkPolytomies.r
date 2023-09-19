@@ -25,7 +25,7 @@ treeNums[[4]] = 1:4
 
 
 
-for(flocknum in 1:(length(treelocs)-1)){
+for(flocknum in 1:(length(treelocs))){
 #x = readRDS('AphyloTreePTHR42908-4Func.rds')
 z1 = readRDS(treelocs[flocknum])
 ruleLim = FALSE # set true to use rule limit changes
@@ -103,23 +103,23 @@ add_geese(
 
 
 # Adding the model terms
-term_gains(bmodel,0:1,duplication = 0)
-term_gains(bmodel,0:1,duplication = 1)
-term_loss(bmodel,0:1,duplication = 0)
-term_loss(bmodel,0:1,duplication = 1)
-#term_maxfuns(bmodel, 0, 1,duplication = 2) #TODO but try seperate with 1 and 2 later
+term_gains(flock,0:1,duplication = 0)
+term_gains(flock,0:1,duplication = 1)
+term_loss(flock,0:1,duplication = 0)
+term_loss(flock,0:1,duplication = 1)
+#term_maxfuns(flock, 0, 1,duplication = 2) #TODO but try seperate with 1 and 2 later
 
 
 if(ruleLim == TRUE){
  k = 2
-rule_limit_changes(bmodel, 0, 0, k)
-rule_limit_changes(bmodel, 1, 0, k)
-rule_limit_changes(bmodel, 2, 0, k)
-rule_limit_changes(bmodel, 3, 0, k)
-rule_limit_changes(bmodel, 4, 0, k)
-rule_limit_changes(bmodel, 5, 0, k)
-rule_limit_changes(bmodel, 6, 0, k)
-rule_limit_changes(bmodel, 7, 0, k)
+rule_limit_changes(flock, 0, 0, k)
+rule_limit_changes(flock, 1, 0, k)
+rule_limit_changes(flock, 2, 0, k)
+rule_limit_changes(flock, 3, 0, k)
+rule_limit_changes(flock, 4, 0, k)
+rule_limit_changes(flock, 5, 0, k)
+rule_limit_changes(flock, 6, 0, k)
+rule_limit_changes(flock, 7, 0, k)
 }
 
 #rule_limit_changes(bmodel, 0, 0, 2, TRUE)
@@ -137,6 +137,9 @@ mcmc <- geese_mcmc(
   prior   = function(p) dlogis(p, scale = 2, log = TRUE)
   )
 mcmc = res[[c0]]$mcmc 
-par_estimates <- colMeans(window(mcmc, start = 20000))
+par_estimates <- colMeans(window(mcmc, start = 15000))
 
 params[[maxPoly]] = par_estimates
+
+
+

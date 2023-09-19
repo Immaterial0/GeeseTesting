@@ -1,10 +1,12 @@
 
 #run this code from it's own folder
 
-tfleaves = FALSE # to remove excess leaves
+tfleaves = TRUE # to remove excess leaves
 tfpoly = TRUE # to shrink polytomies
-maxPoly = 7 # max polytomy size
+maxPoly = 4 # max polytomy size
 maxLeaf = 2 # maximium leaf nodes for each parent (may exceed value based on number of annotated leaves across different functions)
+functionNum = c(1,2)
+z1 = readRDS('../treeSets/3pthr4treesEachwotaxon.rds')
 
 
 
@@ -14,14 +16,13 @@ source('../functions/removeExcessLeafPolytomies.r')
 
 
 #x = readRDS('AphyloTreePTHR42908-4Func.rds')
-z1 = readRDS('../treeSets/3pthr4treesEachwotaxon.rds')
 ruleLim = FALSE # set true to use rule limit changes
 set.seed(53)
 
+
+#### this set is not useful atm, more for tracking names when doing multiple sets
 res = list()
 c0 = 1
-functionNum = c(1,2)
-
 res[[c0]] = list()
 res[[c0]]$name = c()
 res[[c0]]$pthr = c()
@@ -47,7 +48,7 @@ rootpos = 1 + length(z1[[functionNum[1]]]$tip.annotation)
 #annotations = as.list(c(rep(9,length(z1[[1]]$node.type)),z1[[1]]$tip.annotation))
 dups = c(rep(FALSE,rootpos -1),z1[[functionNum[1]]]$node.type == 0)
 #annotations <- replicate(length(annotations), c(9, 9), simplify = FALSE)
-
+print(rootpos)
 z1 = z1[functionNum]
 if(tfleaves) {
     z2 = removeLeaves(z1,2)
@@ -55,6 +56,7 @@ if(tfleaves) {
     edges = z1[[1]]$tree$edge
     annos = z2$annos
     rootpos = min(edges[,1])
+    print(rootpos)
     dups = c(rep(FALSE,rootpos -1),z1[[1]]$node.type == 0)
 }
 
@@ -73,7 +75,7 @@ dups = q$dups
 #plottingGeese1(8,z2,1)
 #plottingGeese2(8,z2,1)
 
-rootpos = length(z1[[functionNum[1]]]$tree$tip.label) + 1
+rootpos = min(edges[,1])
 
 bmodel <- new_geese(
   annotations = annos,
@@ -118,7 +120,7 @@ res[[c0]]$mcmc <- geese_mcmc(
   prior   = function(p) dlogis(p, scale = 2, log = TRUE)
   )
 mcmc = res[[c0]]$mcmc 
-par_estimates <- colMeans(window(mcmc, start = 20000))
+par_estimates <- colMeans(window(mcmc, start = 15000))
 
 #params[[maxPoly]] = par_estimates
 #saveRDS(params,'paramSetgeese3to7set.rds')
