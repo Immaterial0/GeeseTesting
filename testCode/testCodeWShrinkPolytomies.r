@@ -1,8 +1,8 @@
 
 #run this code from it's own folder
 
-tfleaves = TRUE
-tfpoly = TRUE
+tfleaves = TRUE # to remove excess leaves
+tfpoly = TRUE # to shrink polytomies
 maxPoly = 7 # max polytomy size
 maxLeaf = 2 # maximium leaf nodes for each parent (may exceed value based on number of annotated leaves across different functions)
 
