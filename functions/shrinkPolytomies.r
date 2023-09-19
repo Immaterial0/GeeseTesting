@@ -1,5 +1,6 @@
 
 #method 1 : convert polytomies into polytomies of size s max
+
 shrinkPolytomies = function(tree,annoLs,s){ # data frame with 2 columns, vector, integer
 	terminaltoParent = TRUE # make this false if don't want it, will sort edges so add those with lower values first (hence the leaf nodes) to the original node
 	edgeLs = tree$tree$edge
@@ -12,7 +13,7 @@ shrinkPolytomies = function(tree,annoLs,s){ # data frame with 2 columns, vector,
 		return(tree)
 	}
  
-	rootpos = 1 + length(tree$tip.annotation)
+	rootpos = min(edgeLs[,1])
 	tab = table(edgeLs[,1])
 	n = names(tab)[tab > s]
 	#print('check1')
@@ -28,6 +29,7 @@ shrinkPolytomies = function(tree,annoLs,s){ # data frame with 2 columns, vector,
 	counter = 0
 	countCounter = 0
 	#print('check2')
+	flagrecursive = FALSE
 	for(nV in n){
 		#print(counter)
 		#print(nV)
@@ -42,7 +44,10 @@ shrinkPolytomies = function(tree,annoLs,s){ # data frame with 2 columns, vector,
 		if(length(e) - s*sMult > s-sMult) sMult = sMult + 1
 		newNodes = newNodes + sMult
 		#assign most possible to parent node while limiting size of polytomies to s
-		if(sMult > s) print('Recursive')
+		if(sMult > s) {
+			print('Recursive')
+			flagrecursive = TRUE
+		}
 		numOnParent = s-sMult
 		count = 0 
 		if(terminaltoParent){
@@ -129,7 +134,15 @@ shrinkPolytomies = function(tree,annoLs,s){ # data frame with 2 columns, vector,
 	#resObj$edges = edgeNew
 	resObj$annos = annoLs
 	resObj$tree = tree
-	if(sMult > s) resObj = shrinkPolytomies(resObj$tree,resObj$annos,s)
+	if(flagrecursive) {
+		resObj = shrinkPolytomies(resObj$tree,resObj$annos,s)
+		print('Recursive2')
+	}
+	if(is.null(resObj$depth)) resObj$depth = 1
+	else resObj$depth = resObj$depth + 1
+	#print(paste('Depth:',resObj$depth))
+	dups = c(rep(FALSE,rootpos -1),tree$node.type == 0)
+	resObj$dups = c(dups,rep(FALSE,length(resObj$annos)-length(dups)))
 	return(resObj)
 }
 
