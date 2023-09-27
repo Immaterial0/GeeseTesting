@@ -136,10 +136,9 @@ mcmc <- geese_mcmc(
   kernel  = fmcmc::kernel_ram(warmup = 2000), 
   prior   = function(p) dlogis(p, scale = 2, log = TRUE)
   )
-mcmc = res[[c0]]$mcmc 
+#mcmc = res[[c0]]$mcmc 
 par_estimates <- colMeans(window(mcmc, start = 15000))
 
-params[[maxPoly]] = par_estimates
 
 
 
