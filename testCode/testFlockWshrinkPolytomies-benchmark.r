@@ -135,5 +135,5 @@ if(ruleLim == TRUE) {
 init_model(flock)
 
 system.time({
-likelihood(flock, par = rep(0, nterms(flock)))
+likelihood(flock, par = rep(-2, nterms(flock)), ncores = 4)
 }) |> print()

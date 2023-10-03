@@ -26,79 +26,79 @@ treeNums[[4]] = 1:4
 
 
 for(flocknum in 1:(length(treelocs))){
-#x = readRDS('AphyloTreePTHR42908-4Func.rds')
-z1 = readRDS(treelocs[flocknum])
-ruleLim = FALSE # set true to use rule limit changes
-set.seed(53)
+  #x = readRDS('AphyloTreePTHR42908-4Func.rds')
+  z1 = readRDS(treelocs[flocknum])
+  ruleLim = FALSE # set true to use rule limit changes
+  set.seed(53)
 
-res = list()
-c0 = flocknum
-functionNum = treeNums[[flocknum]]
+  res = list()
+  c0 = flocknum
+  functionNum = treeNums[[flocknum]]
 
-res[[c0]] = list()
-res[[c0]]$name = c()
-res[[c0]]$pthr = c()
-for(i in functionNum){
-    res[[c0]]$name = c(res[[c0]]$name,colnames(z1[[i]]$tip.annotation)[1])
-    res[[c0]]$pthr = c(res[[c0]]$pthr,names(z1)[i])
-}
-
-
-annotations = data.frame()
-
-for(i in functionNum){
-	annotations = rbind(annotations,c(z1[[i]]$tip.annotation,rep(9,length(z1[[i]]$node.type))))
-}
-annotations = t(annotations)
-
-rownames(annotations) = 1:length(annotations[,1])
-annos = asplit(annotations,1)
+  res[[c0]] = list()
+  res[[c0]]$name = c()
+  res[[c0]]$pthr = c()
+  for(i in functionNum){
+      res[[c0]]$name = c(res[[c0]]$name,colnames(z1[[i]]$tip.annotation)[1])
+      res[[c0]]$pthr = c(res[[c0]]$pthr,names(z1)[i])
+  }
 
 
-edges = z1[[functionNum[1]]]$tree$edge
-rootpos = 1 + length(z1[[functionNum[1]]]$tip.annotation)
-#annotations = as.list(c(rep(9,length(z1[[1]]$node.type)),z1[[1]]$tip.annotation))
-dups = c(rep(FALSE,rootpos -1),z1[[functionNum[1]]]$node.type == 0)
-#annotations <- replicate(length(annotations), c(9, 9), simplify = FALSE)
+  annotations = data.frame()
 
-z1 = z1[functionNum]
-if(tfleaves) {
-    z2 = removeLeaves(z1,2)
-    z1 = z2$tree
-    edges = z1[[1]]$tree$edge
-    annos = z2$annos
-    rootpos = min(edges[,1])
-    dups = c(rep(FALSE,rootpos -1),z1[[1]]$node.type == 0)
-}
+  for(i in functionNum){
+    annotations = rbind(annotations,c(z1[[i]]$tip.annotation,rep(9,length(z1[[i]]$node.type))))
+  }
+  annotations = t(annotations)
 
-if(tfpoly && max(table(edges[,1])) > maxPoly) {
-	#print('start polytomie clean up')
-	q = shrinkPolytomies(z1[[1]],annos,maxPoly)
-	#print('end polytomy cleanup')
-    edges = q$tree$tree$edge
-    annos = q$annos 
-    dups = q$dups   
-}
+  rownames(annotations) = 1:length(annotations[,1])
+  annos = asplit(annotations,1)
 
 
-#plottingGeese1(8,z2,1)
-#plottingGeese2(8,z2,1)
+  edges = z1[[functionNum[1]]]$tree$edge
+  rootpos = 1 + length(z1[[functionNum[1]]]$tip.annotation)
+  #annotations = as.list(c(rep(9,length(z1[[1]]$node.type)),z1[[1]]$tip.annotation))
+  dups = c(rep(FALSE,rootpos -1),z1[[functionNum[1]]]$node.type == 0)
+  #annotations <- replicate(length(annotations), c(9, 9), simplify = FALSE)
 
-rootpos = min(z1[[1]]$tree$edge[,1])
+  z1 = z1[functionNum]
+  if(tfleaves) {
+      z2 = removeLeaves(z1,2)
+      z1 = z2$tree
+      edges = z1[[1]]$tree$edge
+      annos = z2$annos
+      rootpos = min(edges[,1])
+      dups = c(rep(FALSE,rootpos -1),z1[[1]]$node.type == 0)
+  }
+
+  if(tfpoly && max(table(edges[,1])) > maxPoly) {
+    #print('start polytomie clean up')
+    q = shrinkPolytomies(z1[[1]],annos,maxPoly)
+    #print('end polytomy cleanup')
+      edges = q$tree$tree$edge
+      annos = q$annos 
+      dups = q$dups   
+  }
 
 
-print(length(annos) == max(edges[,1]))
-print(length(annos) == length(dups))
-print(length(annos))
+  #plottingGeese1(8,z2,1)
+  #plottingGeese2(8,z2,1)
 
-add_geese(
-  flock,
-  annotations = annos,
-  geneid = c(edges[, 2], rootpos),
-  parent = c(edges[, 1], -1),
-  duplication = dups
-  )
-#parse_polytomies(bmodel)
+  rootpos = min(z1[[1]]$tree$edge[,1])
+
+
+  print(length(annos) == max(edges[,1]))
+  print(length(annos) == length(dups))
+  print(length(annos))
+
+  add_geese(
+    flock,
+    annotations = annos,
+    geneid = c(edges[, 2], rootpos),
+    parent = c(edges[, 1], -1),
+    duplication = dups
+    )
+  #parse_polytomies(bmodel)
 }
 
 
@@ -128,7 +128,11 @@ rule_limit_changes(flock, 7, 0, k)
 # We need to initialize to do all the accounting
 init_model(flock)
 
-
+tcomp <- system.time(
+  ans_mle <- geese_mle(
+    flock, control = list(maxit = 50), ncores = 4
+    )
+); tcomp/50
 
 mcmc <- geese_mcmc(
   flock,
