@@ -103,10 +103,10 @@ for(flocknum in 1:(length(treelocs))){
 
 
 # Adding the model terms
-term_gains(flock,0:1,duplication = 0)
-term_gains(flock,0:1,duplication = 1)
-term_loss(flock,0:1,duplication = 0)
-term_loss(flock,0:1,duplication = 1)
+term_gains(flock,0:3,duplication = 0)
+term_gains(flock,0:3,duplication = 1)
+term_loss(flock,0:3,duplication = 0)
+term_loss(flock,0:3,duplication = 1)
 #term_maxfuns(flock, 0, 1,duplication = 2) #TODO but try seperate with 1 and 2 later
 
 
@@ -130,19 +130,23 @@ init_model(flock)
 
 tcomp <- system.time(
   ans_mle <- geese_mle(
-    flock, control = list(maxit = 50), ncores = 4
+    flock, control = list(maxit = 100), ncores = 4
     )
-); tcomp/50
+); tcomp/100
 
 mcmc <- geese_mcmc(
   flock,
-  nsteps  = 20000,
-  kernel  = fmcmc::kernel_ram(warmup = 2000), 
-  prior   = function(p) dlogis(p, scale = 2, log = TRUE)
+  initial = ans_mle$par,
+  nsteps  = 200,
+  kernel  = fmcmc::kernel_ram(warmup = 50), 
+  prior   = function(p) dlogis(p, scale = 2, log = TRUE),
+  ncores = 4
   )
 #mcmc = res[[c0]]$mcmc 
 par_estimates <- colMeans(window(mcmc, start = 15000))
 
+pred <- predict_flock(flock, par = ans_mle$par)
 
+do.call(rbind, pred) |> unlist()
 
 

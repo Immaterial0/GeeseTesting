@@ -8,6 +8,7 @@ tfleaves = TRUE # doesn't work for flocks atm I think
 tfpoly = TRUE
 maxPoly = 4 # max polytomy size
 maxLeaf = 2 # maximium leaf nodes for each parent (may exceed value based on number of annotated leaves across different functions)
+ruleLim = TRUE # set true to use rule limit changes
 
 
 library(geese)
@@ -34,7 +35,6 @@ treeNums[[4]] = 1:4
 for(flocknum in 1:(length(treelocs))){
 #x = readRDS('AphyloTreePTHR42908-4Func.rds')
 z1 = readRDS(treelocs[flocknum])
-ruleLim = FALSE # set true to use rule limit changes
 set.seed(53)
 
 res = list()
@@ -118,14 +118,14 @@ term_loss(flock,0:1,duplication = 1)
 
 if(ruleLim == TRUE) {
   k = 2
-  rule_limit_changes(flock, 0, 0, k)
-  rule_limit_changes(flock, 1, 0, k)
-  rule_limit_changes(flock, 2, 0, k)
-  rule_limit_changes(flock, 3, 0, k)
-  rule_limit_changes(flock, 4, 0, k)
-  rule_limit_changes(flock, 5, 0, k)
-  rule_limit_changes(flock, 6, 0, k)
-  rule_limit_changes(flock, 7, 0, k)
+  rule_limit_changes(flock, 0, 0, k, 0)
+  rule_limit_changes(flock, 1, 0, k, 0)
+  rule_limit_changes(flock, 2, 0, k, 1)
+  rule_limit_changes(flock, 3, 0, k, 1)
+  rule_limit_changes(flock, 4, 0, k, 0)
+  rule_limit_changes(flock, 5, 0, k, 0)
+  rule_limit_changes(flock, 6, 0, k, 1)
+  rule_limit_changes(flock, 7, 0, k, 1)
 }
 
 #rule_limit_changes(bmodel, 0, 0, 2, TRUE)
@@ -134,6 +134,9 @@ if(ruleLim == TRUE) {
 # We need to initialize to do all the accounting
 init_model(flock)
 
+flock
 system.time({
-likelihood(flock, par = rep(-2, nterms(flock)), ncores = 4)
-}) |> print()
+replicate(1, 
+  likelihood(flock, par = rep(-2, nterms(flock)), ncores = 4)
+)
+})/1 |> print()
