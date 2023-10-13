@@ -138,7 +138,7 @@ mcmc <- geese_mcmc(
   flock,
   initial = ans_mle$par,
   nsteps  = 200,
-  kernel  = fmcmc::kernel_ram(warmup = 50), 
+  kernel  = fmcmc::kernel_ram(lb = -10, ub = 10, warmup = 50), 
   prior   = function(p) dlogis(p, scale = 2, log = TRUE),
   ncores = 4
   )

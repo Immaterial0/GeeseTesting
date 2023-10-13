@@ -109,23 +109,17 @@ add_geese(
 
 
 # Adding the model terms
-term_gains(flock,0:1,duplication = 0)
-term_gains(flock,0:1,duplication = 1)
-term_loss(flock,0:1,duplication = 0)
-term_loss(flock,0:1,duplication = 1)
+term_gains(flock, 0:3, duplication = 0)
+term_gains(flock, 0:3, duplication = 1)
+term_loss(flock, 0:3, duplication = 0)
+term_loss(flock, 0:3, duplication = 1)
 #term_maxfuns(flock, 0, 1,duplication = 2) #TODO but try seperate with 1 and 2 later
 
 
 if(ruleLim == TRUE) {
   k = 2
-  rule_limit_changes(flock, 0, 0, k, 0)
-  rule_limit_changes(flock, 1, 0, k, 0)
-  rule_limit_changes(flock, 2, 0, k, 1)
-  rule_limit_changes(flock, 3, 0, k, 1)
-  rule_limit_changes(flock, 4, 0, k, 0)
-  rule_limit_changes(flock, 5, 0, k, 0)
-  rule_limit_changes(flock, 6, 0, k, 1)
-  rule_limit_changes(flock, 7, 0, k, 1)
+  for (i in 1:nterms(flock))
+    rule_limit_changes(flock, i, 0, k, 2)
 }
 
 #rule_limit_changes(bmodel, 0, 0, 2, TRUE)
