@@ -115,7 +115,6 @@ term_loss(flock, 0:3, duplication = 0)
 term_loss(flock, 0:3, duplication = 1)
 #term_maxfuns(flock, 0, 1,duplication = 2) #TODO but try seperate with 1 and 2 later
 
-
 if(ruleLim == TRUE) {
   k = 2
   for (i in 1:nterms(flock))
